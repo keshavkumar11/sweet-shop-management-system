@@ -36,7 +36,7 @@ describe("Auth API", () => {
 
   it("should login an existing user and return a token", async ()=>{
     // First register the user
-    (await request(app).post("/api/auth/register")).setEncoding({
+    await request(app).post("/api/auth/register").send({
         name:"Keshav",
         "email":"keshavkumarpurani@gmail.com",
         "password": "Password123",
@@ -44,7 +44,7 @@ describe("Auth API", () => {
     });
 
     // Then try to login
-    const res = (await request(app).post("/api/auth/login")).setEncoding({
+    const res = await request(app).post("/api/auth/login").send({
         email:"keshavkumarpurani@gmail.com",
         password:"Password123",
     });
