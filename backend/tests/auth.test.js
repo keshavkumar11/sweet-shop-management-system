@@ -1,5 +1,25 @@
+require("dotenv").config({path:"./.env.test"});
+const mongoose = require("mongoose");
 const request = require("supertest");
 const app = require("../app");
+
+beforeAll(async()=>{
+    await mongoose.connect(process.env.MONGO_URI,{
+        useNewUrlParser:true,
+        useUnifiedTopology:true,
+    });
+});
+
+afterEach(async () =>{
+    const collections = await mongoose.connection.db.collections();
+    for (const collection of collections) {
+        await collection.deleteMany();
+    }
+})
+
+afterAll(async()=>{
+    await mongoose.connection.close();
+})
 
 describe("Auth API", () => {
   it("should register a new user and return a token", async () => {
