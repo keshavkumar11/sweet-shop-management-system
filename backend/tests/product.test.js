@@ -47,28 +47,57 @@ describe("Product API", () => {
     expect(res.body).toHaveProperty("name", "Rasgulla");
   });
 
-  it("should not allow a user to add a sweet product", async ()=>{
+  it("should not allow a user to add a sweet product", async () => {
     // Register a regular user (non-admin)
     const userRes = await request(app).post("/api/auth/register").send({
-        name:"Regular User",
-        email:"user@test.com",
-        password:"user123",
-        role:"user"
+      name: "Regular User",
+      email: "user@test.com",
+      password: "user123",
+      role: "user",
     });
 
     const token = userRes.body.token;
 
     // Try to add product
-    const res = await request(app).post("/api/products").set("Authorization",`Bearer ${token}`)
-    .send({
-        name:"Barfi",
-        category:"Dry",
-        price:30,
-        quantity:50,
-        imageUrl:"https://example.com/barfi.jpg"
-    });
+    const res = await request(app)
+      .post("/api/products")
+      .set("Authorization", `Bearer ${token}`)
+      .send({
+        name: "Barfi",
+        category: "Dry",
+        price: 30,
+        quantity: 50,
+        imageUrl: "https://example.com/barfi.jpg",
+      });
 
     expect(res.statusCode).toBe(403);
-    expect(res.body).toHaveProperty("message","Access Denied");
-  })
+    expect(res.body).toHaveProperty("message", "Access Denied");
+  });
+
+  it("should return all sweet products", async () => {
+    await request(app)
+      .post("/api/auth/register")
+      .send({
+        name: "Harsh",
+        email: "harsh@test.com",
+        password: "harsh123",
+        role: "admin",
+      })
+      .then((res) =>
+        request(app).set("Authorization", `Bearer ${res.body.token}`).send({
+          name: "Kaju Katri",
+          category: "Dry",
+          price: 50,
+          quantity: 20,
+          imageUrl: "https://example.com/kaju.jpg",
+        })
+      );
+
+      const res = await request(app).get("/api/products");
+
+      expect(res.statusCode).toBe(200);
+      expect(Array.isArray(res.body)).toBe(true);
+      expect(res.body.length).toBeGreaterThan(0);
+      expect(res.body[0]).toHaveProperty("name","Kaju Katri");
+  });
 });
