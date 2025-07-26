@@ -33,4 +33,23 @@ describe("Auth API", () => {
     expect(res.statusCode).toBe(201);
     expect(res.body).toHaveProperty("token");
   });
+
+  it("should login an existing user and return a token", async ()=>{
+    // First register the user
+    (await request(app).post("/api/auth/register")).setEncoding({
+        name:"Keshav",
+        "email":"keshavkumarpurani@gmail.com",
+        "password": "Password123",
+        role:"user",
+    });
+
+    // Then try to login
+    const res = (await request(app).post("/api/auth/login")).setEncoding({
+        email:"keshavkumarpurani@gmail.com",
+        password:"Password123",
+    });
+
+    expect(res.statusCode).toBe(200);
+    expect(res.body).toHaveProperty("token");
+  });
 });
