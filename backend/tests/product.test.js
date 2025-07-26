@@ -37,11 +37,12 @@ describe("Product API", () =>{
             name:"Rasgulla",
             category:"Bengali",
             price:25,
-            quantity:100
+            quantity:100,
+            imageUrl:"https://example.com/rasgulla.jpg"
         });
 
         expect(res.statusCode).toBe(201);
         expect(res.body).toHaveProperty("name","Rasgulla");
         expect(res.body).toHaveProperty("price",25);
-    })
+        expect(res.body).toHaveProperty("imageUrl","https://example.com/rasgulla.jpg");    })
 })
