@@ -1,3 +1,4 @@
+const { parse } = require("dotenv");
 const Product = require("../models/Product");
 const { createProduct } = require("../services/productService");
 
@@ -59,62 +60,79 @@ exports.searchProducts = async (req, res) => {
   }
 };
 
-exports.updateProduct = async (req,res) => {
-    try {
-        const {id} = req.params;
-        const updateFields = req.body;
-
-        const updatedProduct = await Product.findByIdAndUpdate(id,updateFields,{
-            new:true,
-            runValidators:true,
-        });
-
-        if (!updatedProduct) {
-            return res.status(404).json({message:"Product not found"});
-        }
-
-        res.status(200).json(updatedProduct);
-    } catch (error) {
-        res.status(500).json({message: "Failed to update product",error:error.message})
-    }
-}
-
-exports.deleteProduct = async (req,res) => {
-    try {
-        const productId = req.params.id;
-
-        const deleted = await Product.findByIdAndDelete(productId);
-
-        if (!deleted) {
-            return res.status(404).json({message:"Product not found"})
-        }
-
-        res.status(200).json({message:"Sweet deleted successfully."});
-    } catch (error) {
-        res.status(500).json({message:"Failed to delete product",error:error.message});
-    }
-}
-
-exports.purchaseProduct = async (req,res) => {
+exports.updateProduct = async (req, res) => {
   try {
-    const {id} = req.params;
-    const {quantity} = req.body;
+    const { id } = req.params;
+    const updateFields = req.body;
 
-    const product = await Product.findById(id);
+    const updatedProduct = await Product.findByIdAndUpdate(id, updateFields, {
+      new: true,
+      runValidators: true,
+    });
+
+    if (!updatedProduct) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+
+    res.status(200).json(updatedProduct);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Failed to update product", error: error.message });
+  }
+};
+
+exports.deleteProduct = async (req, res) => {
+  try {
+    const productId = req.params.id;
+
+    const deleted = await Product.findByIdAndDelete(productId);
+
+    if (!deleted) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+
+    res.status(200).json({ message: "Sweet deleted successfully." });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Failed to delete product", error: error.message });
+  }
+};
+
+exports.purchaseProduct = async (req, res) => {
+  try {
+    const productId = req.params.id;
+    let { quantity } = req.body;
+
+    if (!quantity || isNaN(quantity) || quantity <= 0) {
+      return res
+        .status(400)
+        .json({ message: "Quantity must be a positive number" });
+    }
+
+    quantity = parseInt(quantity);
+
+    const product = await Product.findById(productId);
 
     if (!product) {
-      return res.status(404).json({message: "Product not found"});
+      return res.status(404).json({ message: "Product not found" });
     }
 
     if (product.quantity < quantity) {
-      return res.status(400).json({message:"Product is out of stock"});
+      return res.status(400).json({ message: "Insufficient stock" });
     }
 
     product.quantity -= quantity;
     await product.save();
 
-    res.status(200).json({message:"Purchase successful",remainingQuantity:product.quantity})
+    res
+      .status(200)
+      .json({
+        message: `${quantity} ${product.name} purchased successfully`,
+        remainingQuantity: product.quantity,
+      });
   } catch (error) {
-    res.status(500).json({message:"Purchase failed",error:error.message})
+    res.status(500).json({ message: "Purchase failed", error: error.message });
   }
-}
+};
