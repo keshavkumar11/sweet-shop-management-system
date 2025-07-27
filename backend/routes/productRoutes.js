@@ -5,5 +5,6 @@ const {onlyAdmin, authorizeRoles} = require("../middleware/authorize");
 const{verifyToken} = require("../middleware/authMiddleware")
 
 router.post("/",verifyToken,authorizeRoles("admin"),productController.addProduct);
+router.get("/",productController.getAllProducts);
 
 module.exports = router;

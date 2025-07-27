@@ -75,26 +75,26 @@ describe("Product API", () => {
   });
 
   it("should return all sweet products", async () => {
-    await request(app)
-      .post("/api/auth/register")
-      .send({
-        name: "Harsh",
+    const adminRes = await request(app).post("/api/auth/register").send({
+         name: "Harsh",
         email: "harsh@test.com",
         password: "harsh123",
         role: "admin",
-      })
-      .then((res) =>
-        request(app).set("Authorization", `Bearer ${res.body.token}`).send({
-          name: "Kaju Katri",
+    });
+
+    await request(app)
+      .post("/api/products")
+      .set("Authorization",`Bearer ${adminRes.body.token}`)
+      .send({
+       name: "Kaju Katri",
           category: "Dry",
           price: 50,
           quantity: 20,
           imageUrl: "https://example.com/kaju.jpg",
-        })
-      );
-
+      });
+      
       const res = await request(app).get("/api/products");
-
+      
       expect(res.statusCode).toBe(200);
       expect(Array.isArray(res.body)).toBe(true);
       expect(res.body.length).toBeGreaterThan(0);
