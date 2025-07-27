@@ -112,7 +112,7 @@ describe("Product API", () => {
     const token = adminRes.body.token;
 
     // Add sweets to DB
-    const sweets = [
+    const sampleSweets = [
       {
         name: "Gulab Jamun",
         category: "Wet",
@@ -136,7 +136,7 @@ describe("Product API", () => {
       },
     ];
 
-    for (const sweet of sweets) {
+    for (const sweet of sampleSweets) {
       await request(app)
         .post("/api/products")
         .set("Authorization", `Bearer ${token}`)
