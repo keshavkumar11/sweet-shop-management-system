@@ -146,14 +146,55 @@ describe("Product API", () => {
     const resByName = await request(app).get("/api/products/search?name=Gulab");
     expect(resByName.statusCode).toBe(200);
     expect(resByName.body.length).toBe(1);
-    expect(resByName.body[0]).toHaveProperty("name","Gulab Jamun");
+    expect(resByName.body[0]).toHaveProperty("name", "Gulab Jamun");
 
-    const resByCategory = await request(app).get("/api/products/search?category=Wet")
+    const resByCategory = await request(app).get(
+      "/api/products/search?category=Wet"
+    );
     expect(resByCategory.statusCode).toBe(200);
     expect(resByCategory.body.length).toBe(2);
 
-    const resByPrice = await request(app).get("/api/products/search?minPrice=10&maxPrice=30");
+    const resByPrice = await request(app).get(
+      "/api/products/search?minPrice=10&maxPrice=30"
+    );
     expect(resByPrice.statusCode).toBe(200);
-    expect(resByPrice.body.length).toBe(2)
+    expect(resByPrice.body.length).toBe(2);
+  });
+
+  it("should allow admin to update a sweet product", async () => {
+    // Register a admin
+    const adminRes = await request(app).post("/api/auth/register").send({
+      name: "Harsh",
+      email: "harsh@gmail.com",
+      password: "harsh123",
+      role: "admin",
+    });
+    const token = adminRes.body.token;
+
+    // Add sweet product
+    const productRes = await request(app)
+      .post("/api/products")
+      .set("Authorization", `Bearer ${token}`)
+      .send({
+        name:"Ladu",
+        category:"Dry",
+        price:40,
+        quantity:30,
+        imageUrl:"https://example.com/ladu.jpg"
+      });
+
+      const productId = productRes.body._id;
+
+    //   Update the sweet
+    const updateRes = await request(app).put(`/api/products/${productId}`).set("Authorization",`Bearer ${token}`)
+    .send({
+        name:"Besan Ladu",
+        price:45,
+    });
+
+    expect(updateRes.statusCode).toBe(200);
+    expect(updateRes.body).toHaveProperty("name","Besan Ladu");
+    expect(updateRes.body).toHaveProperty("price",45)
+
   });
 });
