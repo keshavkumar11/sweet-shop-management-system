@@ -112,7 +112,7 @@ describe("Product API", () => {
     const token = adminRes.body.token;
 
     // Add sweets to DB
-    const sweet = [
+    const sweets = [
       {
         name: "Gulab Jamun",
         category: "Wet",
@@ -143,16 +143,16 @@ describe("Product API", () => {
         .send(sweet);
     }
 
-    const resByName = await request(app).get("/api/sweets/search?name=Gulab");
+    const resByName = await request(app).get("/api/products/search?name=Gulab");
     expect(resByName.statusCode).toBe(200);
     expect(resByName.body.length).toBe(1);
     expect(resByName.body[0]).toHaveProperty("name","Gulab Jamun");
 
-    const resByCategory = await request(app).get("/api/sweets/search?category=Wet")
+    const resByCategory = await request(app).get("/api/products/search?category=Wet")
     expect(resByCategory.statusCode).toBe(200);
     expect(resByCategory.body.length).toBe(2);
 
-    const resByPrice = await request(app).get("/api/sweets/search?minPrice=10&maxPrice=30");
+    const resByPrice = await request(app).get("/api/products/search?minPrice=10&maxPrice=30");
     expect(resByPrice.statusCode).toBe(200);
     expect(resByPrice.body.length).toBe(2)
   });

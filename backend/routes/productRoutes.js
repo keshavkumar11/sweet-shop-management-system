@@ -6,5 +6,5 @@ const{verifyToken} = require("../middleware/authMiddleware")
 
 router.post("/",verifyToken,authorizeRoles("admin"),productController.addProduct);
 router.get("/",productController.getAllProducts);
-
+router.get("/search",productController.searchProducts)
 module.exports = router;
