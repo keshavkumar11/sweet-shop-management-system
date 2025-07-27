@@ -7,7 +7,7 @@ function App() {
       <div className="bg-blue-500 text-white p-4 rounded">
         If this box is blue, Tailwind works.
       </div>
-      <Login/>
+     
     </>
   );
 }

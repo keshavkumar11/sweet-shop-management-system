@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./../styles/Login.css"
+import { loginUser } from "../api/authService";
 
 const Login = () => {
   const [formData, setFormData] = useState({ email: "", password: "" });
@@ -10,10 +11,19 @@ const Login = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Login Data :- ", formData);
-    navigate("/products");
+   
+    try {
+        const data = await loginUser(formData);
+        localStorage.setItem("token",data.token);
+        const decoded = JSON.parse(atob(data.token.split(".")[1]));
+        localStorage.setItem("role",decoded.role);
+        navigate(decoded.role==="admin"?"/admin/dashboard":"/products")
+    } catch (error) {
+        alert(error.message)
+    }
+    
   };
 
   return (
