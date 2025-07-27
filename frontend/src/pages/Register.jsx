@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-
+import { registerUser } from "../api/authService";
+import "./../styles/Register.css";
+import { Link } from "react-router-dom";
 const Register = () => {
   const [formData, setFormData] = useState({
     name: "",
@@ -12,14 +14,18 @@ const Register = () => {
   const navigate = useNavigate();
 
   const handleChange = (e) => {
-    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      await registerUser(formData);
+      const data = await registerUser(formData);
+      localStorage.setItem("token", data.token);
+      const decoded = JSON.parse(atob(data.token.split(".")[1]));
+      localStorage.setItem("role", decoded.role);
+      navigate(decoded.role === "admin" ? "/admin/dashboard" : "/products");
       alert("Registered successfully. Please login");
       navigate("/login");
     } catch (error) {
@@ -59,7 +65,14 @@ const Register = () => {
             value={formData.password}
           />
 
+          <select name="role" value={formData.role} onChange={handleChange}>
+            <option value="user">User</option>
+            <option value="admin">Admin</option>
+          </select>
           <button type="submit">Register</button>
+          <p>
+            Already have an account? <Link to="/login">Login</Link>
+          </p>
         </form>
       </div>
     </>
