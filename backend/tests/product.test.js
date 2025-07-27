@@ -197,4 +197,47 @@ describe("Product API", () => {
     expect(updateRes.body).toHaveProperty("price",45)
 
   });
+
+  it("should allow an admin to delete a sweet product", async()=>{
+    const adminRes = (await request(app).post("/api/auth/register")).send({
+        name:"Harsh",
+        email:"Harsh@sweets.com",
+        password:"harsh123",
+        role:"admin",
+    });
+
+    const token = adminRes.body.token;
+
+    const productRes = await request(app).post("/api/products").set("Authorization",`Bearer ${token}`).send({
+        name:"Mathurai Peda",
+        category:"Dry",
+        price:40,
+        quantity:20,
+        imageUrl:"https://example.com/mathurai.jpg",
+    });
+
+    const productId = productRes.body._id;
+
+    const deleteRes = await request(app).delete(`/api/products/${productId}`).set("Authorization",`Bearer ${token}`);
+
+    expect(deleteRes.statusCode).toBe(200);
+    expect(deleteRes.body.message).toBe("Sweet deleted successfully.");
+  });
+
+  it("should return 403 if user is not admin", async()=>{
+    const userRes = await request(app).post("/api/auth/register").send({
+        name:"Shiv",
+        email:"shiv@gmail.com",
+        password:"shiv123",
+        role:"user",
+    });
+
+    const token = userRes.body.token;
+
+    const res = await request(app).delete("/api/products/123456789012")
+    .set("Authorization",`Bearer ${token}`);
+
+    expect(res.statusCode).toBe(403);
+    expect(res.body.message).toBe("Access Denied");
+  })
 });
