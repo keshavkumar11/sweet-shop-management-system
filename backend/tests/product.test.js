@@ -199,12 +199,12 @@ describe("Product API", () => {
   });
 
   it("should allow an admin to delete a sweet product", async()=>{
-    const adminRes = (await request(app).post("/api/auth/register")).send({
+    const adminRes = (await request(app).post("/api/auth/register").send({
         name:"Harsh",
         email:"Harsh@sweets.com",
         password:"harsh123",
         role:"admin",
-    });
+    }));
 
     const token = adminRes.body.token;
 
