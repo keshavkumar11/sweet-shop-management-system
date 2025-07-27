@@ -289,7 +289,7 @@ describe("Product API", () => {
 
     const token = adminRes.body.token;
 
-    const productRes = (await request(app).post("/api/products")).set("Authorization",`Bearer ${token}`)
+    const productRes = await request(app).post("/api/products").set("Authorization",`Bearer ${token}`)
     .send({
         name:"Soan Papdi",
         category:"Dry",

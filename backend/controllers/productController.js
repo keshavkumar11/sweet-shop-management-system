@@ -136,3 +136,30 @@ exports.purchaseProduct = async (req, res) => {
     res.status(500).json({ message: "Purchase failed", error: error.message });
   }
 };
+
+exports.restockProduct = async (req,res) => {
+  try {
+    const {id} = req.params;
+    const {quantity} = req.body;
+
+    if (!quantity || isNaN(quantity) || quantity<=0) {
+      return res.status(400).json({message:"Quantity must be a positive number"});
+    }
+
+    const product = await Product.findById(id);
+    
+    if (!product) {
+      return res.status(404).json({message:"Product not found"});
+    }
+
+    product.quantity += parseInt(quantity);
+    await product.save();
+
+    res.status(200).json({
+      message: `${quantity} ${product.name} restocked successfully.`,
+      updatedQuantity: product.quantity,
+    });
+  } catch (error) {
+    res.status(500).json({message: "Failed to restock product", error: error.message})
+  }
+}

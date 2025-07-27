@@ -10,4 +10,5 @@ router.get("/search",productController.searchProducts);
 router.put("/:id",verifyToken,authorizeRoles("admin"),productController.updateProduct);
 router.delete("/:id",verifyToken,authorizeRoles("admin"),productController.deleteProduct);
 router.post("/:id/purchase",productController.purchaseProduct);
+router.post("/:id/restock",verifyToken,authorizeRoles("admin"),productController.restockProduct);
 module.exports = router;
