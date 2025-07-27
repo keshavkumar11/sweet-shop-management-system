@@ -176,68 +176,106 @@ describe("Product API", () => {
       .post("/api/products")
       .set("Authorization", `Bearer ${token}`)
       .send({
-        name:"Ladu",
-        category:"Dry",
-        price:40,
-        quantity:30,
-        imageUrl:"https://example.com/ladu.jpg"
+        name: "Ladu",
+        category: "Dry",
+        price: 40,
+        quantity: 30,
+        imageUrl: "https://example.com/ladu.jpg",
       });
-
-      const productId = productRes.body._id;
-
-    //   Update the sweet
-    const updateRes = await request(app).put(`/api/products/${productId}`).set("Authorization",`Bearer ${token}`)
-    .send({
-        name:"Besan Ladu",
-        price:45,
-    });
-
-    expect(updateRes.statusCode).toBe(200);
-    expect(updateRes.body).toHaveProperty("name","Besan Ladu");
-    expect(updateRes.body).toHaveProperty("price",45)
-
-  });
-
-  it("should allow an admin to delete a sweet product", async()=>{
-    const adminRes = (await request(app).post("/api/auth/register").send({
-        name:"Harsh",
-        email:"Harsh@sweets.com",
-        password:"harsh123",
-        role:"admin",
-    }));
-
-    const token = adminRes.body.token;
-
-    const productRes = await request(app).post("/api/products").set("Authorization",`Bearer ${token}`).send({
-        name:"Mathurai Peda",
-        category:"Dry",
-        price:40,
-        quantity:20,
-        imageUrl:"https://example.com/mathurai.jpg",
-    });
 
     const productId = productRes.body._id;
 
-    const deleteRes = await request(app).delete(`/api/products/${productId}`).set("Authorization",`Bearer ${token}`);
+    //   Update the sweet
+    const updateRes = await request(app)
+      .put(`/api/products/${productId}`)
+      .set("Authorization", `Bearer ${token}`)
+      .send({
+        name: "Besan Ladu",
+        price: 45,
+      });
+
+    expect(updateRes.statusCode).toBe(200);
+    expect(updateRes.body).toHaveProperty("name", "Besan Ladu");
+    expect(updateRes.body).toHaveProperty("price", 45);
+  });
+
+  it("should allow an admin to delete a sweet product", async () => {
+    const adminRes = await request(app).post("/api/auth/register").send({
+      name: "Harsh",
+      email: "Harsh@sweets.com",
+      password: "harsh123",
+      role: "admin",
+    });
+
+    const token = adminRes.body.token;
+
+    const productRes = await request(app)
+      .post("/api/products")
+      .set("Authorization", `Bearer ${token}`)
+      .send({
+        name: "Mathurai Peda",
+        category: "Dry",
+        price: 40,
+        quantity: 20,
+        imageUrl: "https://example.com/mathurai.jpg",
+      });
+
+    const productId = productRes.body._id;
+
+    const deleteRes = await request(app)
+      .delete(`/api/products/${productId}`)
+      .set("Authorization", `Bearer ${token}`);
 
     expect(deleteRes.statusCode).toBe(200);
     expect(deleteRes.body.message).toBe("Sweet deleted successfully.");
   });
 
-  it("should return 403 if user is not admin", async()=>{
+  it("should return 403 if user is not admin", async () => {
     const userRes = await request(app).post("/api/auth/register").send({
-        name:"Shiv",
-        email:"shiv@gmail.com",
-        password:"shiv123",
-        role:"user",
+      name: "Shiv",
+      email: "shiv@gmail.com",
+      password: "shiv123",
+      role: "user",
     });
 
     const token = userRes.body.token;
 
-    const res = await request(app).delete("/api/products/123456789012")
-    .set("Authorization",`Bearer ${token}`);
+    const res = await request(app)
+      .delete("/api/products/123456789012")
+      .set("Authorization", `Bearer ${token}`);
 
     expect(res.statusCode).toBe(403);
     expect(res.body.message).toBe("Access Denied");
-  })
+  });
+
+  it("should decrease sweet quantity after purchase", async () => {
+    const adminRes = await request(app).post("/api/auth/register").send({
+      name: "Inventory Admin",
+      email: "iventory@gmail.com",
+      password: "inventory123",
+      role: "admin",
+    });
+
+    const token = adminRes.body.token;
+
+    const productRes = await request(app)
+      .post("/api/products")
+      .set("Authorization", `Bearer ${token}`)
+      .send({
+        name: "Peda",
+        category: "Dry",
+        price: 20,
+        quantity: 10,
+        imageUrl: "https://example.com/peda.jpg",
+      });
+
+    const productId = productRes.body._id;
+
+    const purchaseRes = await request(app)
+      .post(`/api/products/${productId}/purchase`)
+      .send({ quantity: 3 });
+
+    expect(purchaseRes.statusCode).toBe(200);
+    expect(purchaseRes.body.remainingQuantity).toBe(7);
+  });
 });
