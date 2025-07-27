@@ -1,6 +1,6 @@
 import Login from "../pages/Login";
 import { Navigate, Route, Routes } from "react-router-dom";
-import RegisterPage from "../pages/RegisterPage";
+import Register from "../pages/Register";
 import ProductsPage from "../pages/ProductsPage";
 import Dashboard from "../pages/Dashboard";
 import HomePage from "../pages/HomePage";
@@ -19,7 +19,7 @@ const AppRoutes = () => {
     <Routes>
       <Route path="/" element={<HomePage />} />
       <Route path="/login" element={<Login />} />
-      <Route path="/register" element={<RegisterPage />} />
+      <Route path="/register" element={<Register />} />
 
       {/* Protected route for admin */}
       <Route
