@@ -58,3 +58,23 @@ exports.searchProducts = async (req, res) => {
     res.status(500).json({ message: "Search failed", error: error.message });
   }
 };
+
+exports.updateProduct = async (req,res) => {
+    try {
+        const {id} = req.params;
+        const updateFields = req.body;
+
+        const updatedProduct = await Product.findByIdAndUpdate(id,updateFields,{
+            new:true,
+            runValidators:true,
+        });
+
+        if (!updatedProduct) {
+            return res.status(404).json({message:"Product not found"});
+        }
+
+        res.status(200).json(updatedProduct);
+    } catch (error) {
+        res.status(500).json({message: "Failed to update product",error:error.message})
+    }
+}
