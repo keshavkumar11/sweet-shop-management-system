@@ -278,4 +278,34 @@ describe("Product API", () => {
     expect(purchaseRes.statusCode).toBe(200);
     expect(purchaseRes.body.remainingQuantity).toBe(7);
   });
+
+  it("should allow admin to restock a sweet product", async () => {
+    const adminRes = await request(app).post("/api/auth/register").send({
+        name:"Restock Admin",
+        email:"restockadmin@test.com",
+        password:"restock123",
+        role:"admin",
+    });
+
+    const token = adminRes.body.token;
+
+    const productRes = (await request(app).post("/api/products")).set("Authorization",`Bearer ${token}`)
+    .send({
+        name:"Soan Papdi",
+        category:"Dry",
+        price:30,
+        quantity:10,
+        imageUrl:"https://example.com/soan.jpg",
+    });
+
+    const productId = productRes.body._id;
+
+    const restockRes = await request(app)
+    .post(`/api/products/${productId}/restock`)
+    .set("Authorization",`Bearer ${token}`)
+    .send({quantity:5})
+
+    expect(restockRes.statusCode).toBe(200);
+    expect(restockRes.body.updatedQuantity).toBe(15);
+  })
 });
