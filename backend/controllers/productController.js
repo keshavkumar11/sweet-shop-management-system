@@ -94,3 +94,27 @@ exports.deleteProduct = async (req,res) => {
         res.status(500).json({message:"Failed to delete product",error:error.message});
     }
 }
+
+exports.purchaseProduct = async (req,res) => {
+  try {
+    const {id} = req.params;
+    const {quantity} = req.body;
+
+    const product = await Product.findById(id);
+
+    if (!product) {
+      return res.status(404).json({message: "Product not found"});
+    }
+
+    if (product.quantity < quantity) {
+      return res.status(400).json({message:"Product is out of stock"});
+    }
+
+    product.quantity -= quantity;
+    await product.save();
+
+    res.status(200).json({message:"Purchase successful",remainingQuantity:product.quantity})
+  } catch (error) {
+    res.status(500).json({message:"Purchase failed",error:error.message})
+  }
+}
