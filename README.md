@@ -83,22 +83,105 @@ All files       |    100   |   100    |   100    |   100    |                   
 
 📁 Folder Structure
 
-sweet-shop-management-system/
-├── backend/
-│   ├── controllers/
-|   ├── middleware/
-│   ├── routes/
-│   ├── models/
-│   ├── services/
-│   ├── tests/
-│   └── server.js
-│
-├── frontend/
-│   ├── src/
-│   │   ├── api/
-│   │   ├── components/
-│   │   ├── pages/
-│   │   ├── styles/
-│   │   └── App.jsx
-│   └── public/
+<img width="502" height="835" alt="Folder Structure" src="https://github.com/user-attachments/assets/1145d407-7c65-4376-b5da-5d8b67252760" />
+
+
+🚀 Getting Started
+
+=> Clone the repository
+
+git clone https://github.com/keshavkumar11/sweet-shop-management-system.git
+
+cd sweet-shop-management-system
+
+=> Backend Setup
+
+cd backend
+
+npm install
+
+Create a .env file:
+
+MONGO_URI=your_mongodb_connection
+JWT_SECRET=your_jwt_secret
+CLOUDINARY_CLOUD_NAME=xxx
+CLOUDINARY_API_KEY=xxx
+CLOUDINARY_API_SECRET=xxx
+
+
+Start server:
+
+npm start
+
+=> Frontend Setup
+
+cd frontend
+
+npm install
+
+npm run dev
+
+🚀 Live URL / Localhost
+
+Visit: http://localhost:5173
+
+📈 Screenshots
+
+Home Page
+
+<img width="1877" height="925" alt="image" src="https://github.com/user-attachments/assets/7010072c-3287-47b8-8f03-8ee47be87451" />
+
+
+<img width="1874" height="916" alt="image" src="https://github.com/user-attachments/assets/ac98b9bf-b197-48d9-a0a1-4cd18a89e70e" />
+
+Registration Page
+
+<img width="486" height="548" alt="image" src="https://github.com/user-attachments/assets/ac00ddd9-5dab-449a-82cb-da1f4bf76692" />
+
+Login Page
+
+<img width="450" height="400" alt="image" src="https://github.com/user-attachments/assets/048b6fc3-dcc3-43c1-b76e-5ce0d1c1841e" />
+
+Filter Feature
+
+==> By category
+
+<img width="1896" height="908" alt="image" src="https://github.com/user-attachments/assets/7062725e-3539-4b83-ac7e-b0d0272aca28" />
+
+==> By Name
+
+<img width="1701" height="610" alt="image" src="https://github.com/user-attachments/assets/d143dc32-8d72-4da0-a1a1-aa3ae0fe0f98" />
+
+Admin Dashboard
+
+<img width="1820" height="630" alt="image" src="https://github.com/user-attachments/assets/75dfcab7-bae4-4637-a4c6-8c5fbf639204" />
+
+<img width="594" height="449" alt="image" src="https://github.com/user-attachments/assets/3fad48b0-cd5e-442f-8439-935b9f3c86ac" />
+
+
+
+🔐 Sample Credentials
+
+<img width="398" height="96" alt="image" src="https://github.com/user-attachments/assets/31880dcd-8484-42c2-87d7-fc1a7fb5b74e" />
+
+🎮 Author
+
+Keshavkumar Purani
+MCA Student | Full Stack Developer
+
+📄 License
+
+This project is open-source and MIT licensed.
+
+
+
+
+
+
+
+
+ 
+
+
+
 
