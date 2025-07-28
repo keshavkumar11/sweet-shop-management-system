@@ -19,7 +19,7 @@ const AppRoutes = () => {
     <Routes>
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
-
+      <Route path="/" element={<HomePage />} />
       {/* Protected route for admin */}
       <Route
         path="/admin/dashboard"
@@ -34,13 +34,13 @@ const AppRoutes = () => {
       <Route
         path="/products"
         element={
-            <PrivateRoute role="user">
-                <ProductsPage/>
-            </PrivateRoute>
+          <PrivateRoute role="user">
+            <ProductsPage />
+          </PrivateRoute>
         }
-        />
+      />
 
-        <Route path="*" element={<Navigate to="/"/>}/>
+      <Route path="*" element={<Navigate to="/" />} />
     </Routes>
   );
 };
