@@ -14,3 +14,11 @@ export async function addProductAPI(productData) {
   if (!res.ok) throw new Error(data.message || "Add Product failed");
   return data;
 }
+
+export async function getAllProducts() {
+    const res = await fetch("http://localhost:5000/api/products");
+
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.message||"Failed to fetch products");
+    return data;
+}
