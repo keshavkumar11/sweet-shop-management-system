@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { getAllProducts, purchaseProduct } from "../api/productService";
+import "../styles/ProductsPage.css";
+
 const ProductsPage = () => {
   const [products, setProducts] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");

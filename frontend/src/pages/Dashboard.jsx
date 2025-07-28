@@ -6,6 +6,7 @@ import {
   updateProductAPI,
   deleteProductAPI,
 } from "../api/productService"; // ✅ ADD THIS LINE
+import "../styles/Dashboard.css";
 
 const Dashboard = () => {
   const [products, setProducts] = useState([]);
