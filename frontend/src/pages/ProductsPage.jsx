@@ -1,45 +1,71 @@
-import { useEffect, useState } from "react"
-import { getAllProducts } from "../api/productService";
+import { useEffect, useState } from "react";
+import { getAllProducts, purchaseProduct } from "../api/productService";
 const ProductsPage = () => {
-    const [products,setProducts] = useState([]);
-    useEffect(()=>{
-        async function loadProducts() {
-            try {
-                const data = await getAllProducts();
-                setProducts(data);
-            } catch (error) {
-                alert(error.message);
-            }
-        }
+  const [products, setProducts] = useState([]);
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const data = await getAllProducts();
+        setProducts(data);
+      } catch (error) {
+        alert("Failed to load products");
+      }
+    };
+    fetchProducts();
+  }, []);
 
-        loadProducts();
-    },[])
+  const handlePurchase = async (productId) => {
+    const quantity = prompt("Enter quantity to purchase:");
+    const parsedQuantity = parseInt(quantity);
 
-    const handlePurchase = async (id) => {
-        alert(`Purchase triggered for product ID: ${id}`);
+    if (isNaN(parsedQuantity) || parsedQuantity <= 0) {
+      alert("Enter a valid quantity");
+      return;
     }
 
-    return(
-        <>
-         <div className="products-grid">
-      {products.map((prod) => (
-        <div key={prod._id} className="product-card">
-          <img src={prod.imageUrl} alt={prod.name} width={150} />
-          <h3>{prod.name}</h3>
-          <p>Category: {prod.category}</p>
-          <p>Price: ₹{prod.price}</p>
-          <p>Available: {prod.quantity}</p>
-          <button
-            disabled={prod.quantity === 0}
-            onClick={() => handlePurchase(prod._id)}
-          >
-            {prod.quantity === 0 ? "Out of Stock" : "Purchase"}
-          </button>
-        </div>
-      ))}
-    </div>
-        </>
-    )
-}
+    try {
+      const result = await purchaseProduct(productId, parsedQuantity);
+      alert(result.message);
+
+      setProducts((prev) =>
+        prev.map((p) =>
+          p._id === productId
+            ? { ...p, quantity: p.quantity - parsedQuantity }
+            : p
+        )
+      );
+    } catch (error) {
+      alert(error.message);
+    }
+  };
+
+  return (
+    <>
+      <div className="products-page">
+        <h2>Available Sweets</h2>
+        {products.length === 0 ? (
+          <p>No products found</p>
+        ) : (
+          <div className="product-list">
+            {products.map((product) => (
+              <div key={product._id} className="product-card">
+                <img src={product.imageUrl} width={100} alt={product.name} />
+                <h3>{product.name}</h3>
+                <p>₹{product.price}</p>
+                <p>Stock: {product.quantity}</p>
+                <button
+                  onClick={() => handlePurchase(product._id)}
+                  disabled={product.quantity <= 0}
+                >
+                  {product.quantity <= 0 ? "Out of Stock" : "Purchase"}
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </>
+  );
+};
 
 export default ProductsPage;
