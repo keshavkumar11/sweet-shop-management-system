@@ -61,3 +61,29 @@ export async function restockProduct(productId, quantity) {
   if (!res.ok) throw new Error(data.message || "Failed to restock product");
   return data;
 }
+
+export const updateProductAPI = async (id, updatedData, token) => {
+  const API_URL = "http://localhost:5000/api";
+  const res = await fetch(`${API_URL}/products/${id}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(updatedData),
+  });
+  if (!res.ok) throw new Error("Failed to update product");
+  return await res.json();
+};
+
+export const deleteProductAPI = async (id, token) => {
+  const API_URL = "http://localhost:5000/api";
+  const res = await fetch(`${API_URL}/products/${id}`, {
+    method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  if (!res.ok) throw new Error("Failed to delete product");
+  return await res.json();
+};
